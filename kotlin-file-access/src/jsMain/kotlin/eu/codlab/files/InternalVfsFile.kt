@@ -9,6 +9,13 @@ actual typealias VfsFileAccess = String
 
 internal actual fun VirtualFile.getAccessor(vfs: VfsFile) = absolutePath
 
+/**
+ * The Javascript implementation is unoptimal for now
+ * as writing and reading passthrough b64 encoding/decoding...
+ *
+ * Looking for a better alternative like the local db instead of localstorage
+ * but this will come at a later time
+ */
 internal actual class InternalVfsFile actual constructor(
     private val accessor: VfsFileAccess
 ) {
@@ -19,11 +26,11 @@ internal actual class InternalVfsFile actual constructor(
     actual suspend fun readString(): String {
         if (!exists()) throw IllegalStateException("File not found")
 
-        return localStorage.getItem(accessor) ?: ""
+        return read().decodeToString()
     }
 
     actual suspend fun read(): ByteArray {
-        return readString().fromBase64()
+        return (localStorage.getItem(accessor) ?: "").fromBase64()
     }
 
     actual suspend fun write(byteArray: ByteArray): Long {

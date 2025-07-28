@@ -4,15 +4,16 @@ buildscript {
 
     dependencies {
         classpath additionals.sonarqube.gradlePlugin
-        classpath additionals.nexus.gradlePlugin
         classpath additionals.license.gradlePlugin
     }
 }
 
 plugins {
-    alias(additionals.plugins.publish.nexus)
     alias(additionals.plugins.android.library) apply false
     alias(additionals.plugins.kotlin.multiplatform) apply false
+    alias(additionals.plugins.jetbrains.compose) apply false
+    alias(additionals.plugins.compose.compiler) apply false
+    alias(additionals.plugins.publish.nexus)
 }
 
 allprojects {
@@ -34,6 +35,8 @@ def getExtraString = {String name ->
 nexusPublishing {
     repositories {
         sonatype {
+            nexusUrl = URI.create("https://ossrh-staging-api.central.sonatype.com/service/local/")
+            snapshotRepositoryUrl = URI.create("https://central.sonatype.com/repository/maven-snapshots/")
             username = getExtraString("sonatypeUsername") ?: ""
             password = getExtraString("sonatypePassword") ?: ""
         }

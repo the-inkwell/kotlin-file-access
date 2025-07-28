@@ -1,8 +1,9 @@
 /* * * * * * * * * * * * * * * * *
  * Default project info
  * * * * * * * * * * * * * * * * */
-def defaultVersion = "1.14.2"
+def defaultVersion = "1.16.3"
 def defaultGroup = "eu.codlab"
+def repo = "the-inkwell/kotlin-file-access"
 
 def propSuffix = { prefix, suffixKeyName ->
     return rootProject.properties.containsKey(suffixKeyName)
@@ -10,12 +11,25 @@ def propSuffix = { prefix, suffixKeyName ->
 }
 
 ext {
+    minSdkVersion = 24
     javaVersion = "17"
     prop = { name, defValue ->
         return rootProject.properties.containsKey(name)
                 ? rootProject.properties[name] : defValue
     }
 
+    pomDescription = "Kotlin Multiplatform File Access"
+    pomInceptionYear = "${new Date().format("YYYY")}"
+    pomUrl = "https://github.com/$repo"
+    pomLicenseName = "MIT License"
+    pomLicenseUrl = "https://github.com/$repo/blob/main/LICENSE"
+    pomLicenseDistribution = ""
+    pomDeveloperId = "codlab"
+    pomDeveloperName = "Kevin Le Perf"
+    pomDeveloperOrganization = "Codlabtech"
+    pomDeveloperOrganizationUrl = "https://codlab.eu"
+    pomScmUrl = "scm:git:github.com/${repo}.git"
+    
     sonarUrl = prop("sonarUrl", null)
     sonarToken = prop("sonarToken", null)
 

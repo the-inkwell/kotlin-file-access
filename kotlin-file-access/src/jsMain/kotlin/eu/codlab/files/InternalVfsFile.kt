@@ -1,37 +1,61 @@
 package eu.codlab.files
 
+import korlibs.crypto.encoding.fromBase64
+import korlibs.crypto.encoding.toBase64
 import korlibs.io.file.VfsFile
+import kotlinx.browser.localStorage
 
-internal actual class InternalVfsFile actual constructor(val vfsFile: VfsFile) {
+actual typealias VfsFileAccess = String
+
+internal actual fun VirtualFile.getAccessor(vfs: VfsFile) = absolutePath
+
+internal actual class InternalVfsFile actual constructor(
+    private val accessor: VfsFileAccess
+) {
     actual suspend fun exists(): Boolean {
-        return false
+        return localStorage.getItem(accessor) != null
     }
 
     actual suspend fun readString(): String {
-        throw NullPointerException("can't read string on this platform")
+        if (!exists()) throw IllegalStateException("File not found")
+
+        return localStorage.getItem(accessor) ?: ""
     }
 
     actual suspend fun read(): ByteArray {
-        throw NullPointerException("can't read string on this platform")
+        return readString().fromBase64()
     }
 
     actual suspend fun write(byteArray: ByteArray): Long {
-        return 0
+        return byteArray.toBase64().let {
+            localStorage.setItem(accessor, it)
+            it.length.toLong()
+        }
     }
 
     actual suspend fun mkdir(): Boolean {
-        return false
+        // TODO check that the content was empty ?
+
+        return touch()
     }
 
     actual suspend fun mkdirs(): Boolean {
-        return false
+        // TODO check that the content was empty ?
+
+        return touch()
     }
 
     actual suspend fun touch(): Boolean {
-        return false
+        if (null != localStorage.getItem(accessor)) return true
+
+        localStorage.setItem(accessor, "")
+        return true
     }
 
     actual suspend fun delete(): Boolean {
-        return false
+        if (!exists()) return false
+
+        localStorage.removeItem(accessor)
+        return true
     }
 }

@@ -1,12 +1,11 @@
 package eu.codlab.files
 
-import korlibs.io.async.suspendTest
+import korlibs.io.lang.toByteArray
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class VirtualFileTest {
-
     @Test
     fun testName() {
         val fileName = "fileName"
@@ -22,5 +21,14 @@ class VirtualFileTest {
         ).forEach {
             assertEquals("path/$fileName", it.absolutePath)
         }
+    }
+
+    @Test
+    fun testWrite() = runTest {
+        val fileName = "fileName"
+        val vfsFile = VirtualFile(RootPath, fileName)
+
+        println(vfsFile.absolutePath)
+        vfsFile.write("test".toByteArray())
     }
 }

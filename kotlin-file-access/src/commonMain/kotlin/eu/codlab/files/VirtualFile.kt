@@ -4,7 +4,6 @@ import korlibs.io.file.VfsFile
 import korlibs.io.file.std.localVfs
 
 class VirtualFile {
-
     companion object {
         val Root = VirtualFile(RootPath)
     }
@@ -18,21 +17,22 @@ class VirtualFile {
         path = file
         this.file = null
         this.vfs = localVfs(path, true)
-        internalVfsWrapper = InternalVfsFile(vfs)
+        internalVfsWrapper = InternalVfsFile(getAccessor(vfs))
     }
 
     constructor(path: String, file: String) {
         this.path = path
         this.file = file
+
         this.vfs = localVfs("$path/$file", true)
-        internalVfsWrapper = InternalVfsFile(vfs)
+        internalVfsWrapper = InternalVfsFile(getAccessor(vfs))
     }
 
     constructor(virtualFile: VirtualFile) {
         path = virtualFile.path
         file = virtualFile.file
         vfs = localVfs("$path/$file", true)
-        internalVfsWrapper = InternalVfsFile(vfs)
+        internalVfsWrapper = InternalVfsFile(getAccessor(vfs))
     }
 
     constructor(virtualFile: VirtualFile, file: String) : this(virtualFile.absolutePath, file)

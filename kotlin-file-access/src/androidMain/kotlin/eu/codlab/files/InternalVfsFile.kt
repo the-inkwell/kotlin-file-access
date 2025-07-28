@@ -3,37 +3,43 @@ package eu.codlab.files
 import korlibs.io.file.VfsFile
 import korlibs.time.DateTime
 
-internal actual class InternalVfsFile actual constructor(val vfsFile: VfsFile) {
+internal actual typealias VfsFileAccess = VfsFile
+
+internal actual fun VirtualFile.getAccessor(vfs: VfsFile) = vfs
+
+internal actual class InternalVfsFile actual constructor(
+    private val accessor: VfsFileAccess,
+) {
     actual suspend fun exists(): Boolean {
-        return vfsFile.exists()
+        return accessor.exists()
     }
 
     actual suspend fun readString(): String {
-        return vfsFile.readString()
+        return accessor.readString()
     }
 
     actual suspend fun read(): ByteArray {
-        return vfsFile.read()
+        return accessor.read()
     }
 
     actual suspend fun write(byteArray: ByteArray): Long {
-        return vfsFile.write(byteArray)
+        return accessor.write(byteArray)
     }
 
     actual suspend fun mkdir(): Boolean {
-        return vfsFile.mkdir()
+        return accessor.mkdir()
     }
 
     actual suspend fun mkdirs(): Boolean {
-        return vfsFile.mkdirs()
+        return accessor.mkdirs()
     }
 
     actual suspend fun touch(): Boolean {
-        vfsFile.touch(time = DateTime.now())
+        accessor.touch(time = DateTime.now())
         return true
     }
 
     actual suspend fun delete(): Boolean {
-        return vfsFile.delete()
+        return accessor.delete()
     }
 }

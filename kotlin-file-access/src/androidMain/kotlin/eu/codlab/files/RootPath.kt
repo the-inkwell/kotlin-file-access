@@ -9,6 +9,5 @@ internal var AndroidRootPath: String = ""
 var AndroidContext: Context? = null
     internal set
 
-
 actual val RootPath: String
     get() = AndroidRootPath

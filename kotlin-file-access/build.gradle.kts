@@ -2,7 +2,6 @@
 plugins {
     alias(additionals.plugins.kotlin.multiplatform)
     alias(additionals.plugins.android.library)
-    alias(additionals.plugins.kotlin.serialization)
     id("publication")
     id("jvmCompat")
 }
@@ -23,6 +22,13 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
 
+    macosArm64()
+    macosX64()
+
+    mingwX64()
+    linuxArm64()
+    linuxX64()
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -33,6 +39,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 api(kotlin("test"))
+                api(additionals.kotlinx.coroutines.test)
             }
         }
 
@@ -53,6 +60,29 @@ kotlin {
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
+        }
+
+        val linuxArm64Main by getting
+        val linuxX64Main by getting
+        val linuxMain by creating {
+            dependsOn(commonMain)
+            linuxArm64Main.dependsOn(this)
+            linuxX64Main.dependsOn(this)
+        }
+
+        val macosArm64Main by getting
+        val macosX64Main by getting
+        val macosMain by creating {
+            dependsOn(commonMain)
+            macosArm64Main.dependsOn(this)
+            macosX64Main.dependsOn(this)
+        }
+
+        val mingwX64Main by getting {
+            dependsOn(commonMain)
+            dependencies {
+                // implementation(libs.korio.jvm)
+            }
         }
 
         val jvmMain by getting {
